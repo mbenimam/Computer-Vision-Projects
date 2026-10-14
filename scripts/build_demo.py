@@ -18,6 +18,7 @@ files = ["cvlab/" + p.name for p in (root / "cvlab").glob("*.py")]
 for p in (root / "cvlab").glob("*.py"):
     shutil.copy(p, site / "cvlab" / p.name)
 shutil.copy(root / "demo" / "figures.py", site / "figures.py")
+shutil.copy(root / "demo" / "shell.py", site / "shell.py")
 shutil.copy(root / "demo" / "app.py", site / "app.py")
 
 import subprocess
@@ -59,7 +60,7 @@ def gradio_file(name, path, entry=False):
 
 tags = [gradio_file("app.py", site / "app.py", entry=True)]
 tags += [gradio_file(f, site / f) for f in files]
-tags += [gradio_file("figures.py", site / "figures.py"), gradio_file("samples_data.py", site / "samples_data.py")]
+tags += [gradio_file("figures.py", site / "figures.py"), gradio_file("shell.py", site / "shell.py"), gradio_file("samples_data.py", site / "samples_data.py")]
 tags = "\n".join(tags)
 html = f"""<!doctype html>
 <html lang="en">
