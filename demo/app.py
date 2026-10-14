@@ -32,13 +32,15 @@ def safe(fn):
 
 
 CSS = """
-.gradio-container {max-width: 1500px !important;}
-#sidebar {position: sticky; top: 12px; align-self: flex-start;}
-#nav .wrap {display: flex; flex-direction: column; gap: 4px;}
-#nav label {width: 100%; padding: 10px 12px; border-radius: 8px;}
+.gradio-container {max-width: none !important; padding: 8px 14px !important;}
+#sidebar {position: sticky; top: 8px; align-self: flex-start; max-height: 100vh; overflow-y: auto;}
+#nav .wrap {display: flex; flex-direction: column; gap: 3px;}
+#nav label {width: 100%; padding: 8px 12px; border-radius: 8px;}
 #nav label.selected {border-left: 4px solid var(--primary-500);}
-#plot-panel {min-height: 520px;}
-.idea {font-size: 0.97rem; line-height: 1.5;}
+.fig, .fig > div, .fig .plot-container {background: #0e1117 !important; border: none !important; min-height: 0 !important;}
+.fig img {display: block; margin: 0 auto; width: auto; max-width: 100%; height: auto; max-height: calc(100vh - 260px); object-fit: contain;}
+.idea {font-size: 0.93rem; line-height: 1.4;}
+.idea p {margin: 0 0 6px;}
 footer {display: none !important;}
 """
 
@@ -118,26 +120,28 @@ NAMES = [f"{i + 1}  ·  {t[0]}" for i, t in enumerate(TOPICS)]
 with gr.Blocks(title="Image processing from scratch", analytics_enabled=False, css=CSS,
                theme=gr.themes.Soft(primary_hue="amber", font=["ui-sans-serif", "system-ui", "sans-serif"],
                                     font_mono=["ui-monospace", "monospace"])) as demo:
-    gr.Markdown("# 👁️ Image processing from scratch\n"
-                "Classical computer vision written in plain numpy and running **inside this page**. "
-                "🔒 Your image never leaves your device. "
-                "[Source](https://github.com/mbenimam/Computer-Vision-Projects)")
     with gr.Row(equal_height=False):
-        with gr.Column(scale=1, min_width=270, elem_id="sidebar"):
-            src = gr.Image(value=sample("cameraman"), label="Image (drop your own)", type="numpy", image_mode="L", height=210)
+        with gr.Column(scale=1, min_width=250, elem_id="sidebar"):
+            gr.Markdown("### 👁️ Image processing from scratch\nPlain numpy, running **inside this page**. 🔒 Your image never leaves your device. [Source](https://github.com/mbenimam/Computer-Vision-Projects)")
+            src = gr.Image(value=sample("cameraman"), label="Image (drop your own)", type="numpy", image_mode="L", height=180)
             pick = gr.Dropdown(list(SAMPLES), value="cameraman", label="or choose a sample")
             nav = gr.Radio(NAMES, value=NAMES[0], label="Topics", elem_id="nav")
-        with gr.Column(scale=4):
-            panels, runs = [], []
+        with gr.Column(scale=6):
+            panels, runs, nav_btns = [], [], []
             for i, (title, blurb, controls, fn, takes_image) in enumerate(TOPICS):
                 with gr.Column(visible=(i == 0)) as panel:
-                    gr.Markdown(f"## {title}")
                     with gr.Row(equal_height=False):
-                        with gr.Column(scale=1, min_width=260):
+                        with gr.Column(scale=2, min_width=300):
+                            gr.Markdown(f"## {title}")
                             gr.Markdown(blurb, elem_classes="idea")
-                            comps = controls()
-                        with gr.Column(scale=3, elem_id=f"plot-panel-{i}"):
-                            plot = gr.Plot(label="", show_label=False)
+                        with gr.Column(scale=3, min_width=360):
+                            with gr.Row():
+                                comps = controls()
+                            with gr.Row():
+                                prev_b = gr.Button("‹ Previous", size="sm")
+                                next_b = gr.Button("Next ›", size="sm", variant="primary")
+                            nav_btns.append((prev_b, next_b))
+                    plot = gr.Plot(label="", show_label=False, elem_classes="fig")
                 panels.append(panel)
                 inputs = [nav, src] + comps
 
@@ -155,16 +159,14 @@ with gr.Blocks(title="Image processing from scratch", analytics_enabled=False, c
                 gr.on(triggers=triggers, fn=run, inputs=inputs, outputs=plot, show_progress="minimal")
                 if i == 0:
                     demo.load(run, inputs, plot)
-            with gr.Row():
-                prev_b = gr.Button("‹ Previous topic", size="sm")
-                next_b = gr.Button("Next topic ›", size="sm", variant="primary")
 
     pick.change(sample, pick, src)
     nav.change(lambda cur: [gr.update(visible=(n == cur)) for n in NAMES], nav, panels)
 
     def step(cur, d):
         return NAMES[(NAMES.index(cur) + d) % len(NAMES)]
-    prev_b.click(lambda c: step(c, -1), nav, nav)
-    next_b.click(lambda c: step(c, 1), nav, nav)
+    for prev_b, next_b in nav_btns:
+        prev_b.click(lambda c: step(c, -1), nav, nav)
+        next_b.click(lambda c: step(c, 1), nav, nav)
 
 demo.launch()
