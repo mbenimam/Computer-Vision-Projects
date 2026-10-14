@@ -20,7 +20,7 @@ The one design constraint was privacy. A normal Gradio app sends your image to a
 
 ## What you can play with
 
-| Tab | What you see | The idea in one line |
+| Topic | What you see | The idea in one line |
 |---|---|---|
 | Histograms | image, histogram, cumulative curve, the transfer function | equalising uses the cumulative histogram as the mapping |
 | Convolution | the window, the kernel, the products and their sum for a pixel you choose | an output pixel is a weighted sum of its neighbours |
@@ -37,7 +37,7 @@ The one design constraint was privacy. A normal Gradio app sends your image to a
 
 ## A worked example: equalising
 
-The cumulative histogram *is* the mapping: a level `v` goes to `round((cdf(v) − cdf_min) / (N − cdf_min) · 255)`. Because it comes from probability, the result is only approximately flat for discrete images, which `tests/test_cvlab.py::test_equalise_flattens_cumulative_histogram` checks. The Histograms tab draws that curve on top of your own image.
+The cumulative histogram *is* the mapping: a level `v` goes to `round((cdf(v) − cdf_min) / (N − cdf_min) · 255)`. Because it comes from probability, the result is only approximately flat for discrete images, which `tests/test_cvlab.py::test_equalise_flattens_cumulative_histogram` checks. The Histograms topic draws that curve on top of your own image.
 
 ## Run it
 
@@ -65,7 +65,7 @@ Dockerfile     builds site/ and serves it with nginx
 
 ## What is and isn't there
 
-- The DFT is the plain matrix definition, O(N³), so the Fourier tab downsamples to 128 px. The FFT is used only in the tests, as a reference.
+- The DFT is the plain matrix definition, O(N³), so the Fourier topic downsamples to 128 px. The FFT is used only in the tests, as a reference.
 - Hough finds straight lines only (no circles yet), and the quadtree merge is order-dependent: merging chains through similar neighbours, which you can see in the demo when you raise the tolerance.
 - There is no timing benchmark in the repo yet, so I make no speed claims.
 - The page fetches code, never data: the Python runtime from jsdelivr and some wheels from PyPI, all plain GET requests. I checked with a headless browser that uploading an image sends no request with a body, and I switched Gradio's telemetry off. Self-hosting the runtime would remove even those code downloads.
