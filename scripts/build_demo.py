@@ -1,4 +1,5 @@
 """Assemble the static site in site/: index.html + demo code + cvlab + samples."""
+import html as htmllib
 import json
 import pathlib
 import shutil
@@ -50,9 +51,16 @@ for w in (site / "lite" / "assets").glob("webworker-*.js"):
 if not patched:
     sys.exit("webworker patch point not found: gradio-lite layout changed")
 lite = "./lite"
-tags = "\n".join(f'    <gradio-file name="{f}" url="/{f}" />' for f in files)
-tags += '\n    <gradio-file name="figures.py" url="/figures.py" />'
-tags += '\n    <gradio-file name="samples_data.py" url="/samples_data.py" />'
+def gradio_file(name, path, entry=False):
+    # inline content: <gradio-file url=...> hung the Gradio-Lite worker in testing
+    body = htmllib.escape(path.read_text(), quote=False)
+    return f'    <gradio-file name="{name}"{" entrypoint" if entry else ""}>\n{body}\n    </gradio-file>'
+
+
+tags = [gradio_file("app.py", site / "app.py", entry=True)]
+tags += [gradio_file(f, site / f) for f in files]
+tags += [gradio_file("figures.py", site / "figures.py"), gradio_file("samples_data.py", site / "samples_data.py")]
+tags = "\n".join(tags)
 html = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -71,7 +79,6 @@ numpy
 matplotlib
 pillow
     </gradio-requirements>
-    <gradio-file name="app.py" entrypoint url="/app.py" />
 {tags}
   </gradio-lite>
 </body>
