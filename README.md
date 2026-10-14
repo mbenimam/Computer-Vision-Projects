@@ -8,6 +8,8 @@
 **Classical computer vision, written from first principles with numpy only, plus an interactive demo that runs entirely in your browser: your images are never uploaded.**
 Histograms, convolution, the Fourier transform, Harris corners, Hough lines, quadtree segmentation and Huffman coding, each one a small tested function you can read in a few minutes.
 
+**Live demo: https://cv.shmod.me** (first load downloads the Python runtime; later visits are cached).
+
 ![Hough transform: edge pixels become curves, lines become bright spots](docs/assets/hough.png)
 
 ## Why I built it
