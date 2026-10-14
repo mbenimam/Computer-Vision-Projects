@@ -66,6 +66,7 @@ Dockerfile     builds site/ and serves it with nginx
 - The DFT is the plain matrix definition, O(N³), so the Fourier tab downsamples to 128 px. The FFT is used only in the tests, as a reference.
 - Hough finds straight lines only (no circles yet), and the quadtree merge is order-dependent: merging chains through similar neighbours, which you can see in the demo when you raise the tolerance.
 - There is no timing benchmark in the repo yet, so I make no speed claims.
+- The page fetches code, never data: the Python runtime from jsdelivr and some wheels from PyPI, all plain GET requests. I checked with a headless browser that uploading an image sends no request with a body, and I switched Gradio's telemetry off. Self-hosting the runtime would remove even those code downloads.
 - Gradio-Lite pins an old Pyodide, so the build patches one line of its worker to pre-install a dependency set that still resolves (`scripts/build_demo.py` explains why).
 
 ## Learn the theory

@@ -35,7 +35,8 @@ INTRO = """# 👁️ Image processing from scratch, in your browser
 Every algorithm below is written from first principles in numpy ([source](https://github.com/mbenimam/Computer-Vision-Projects/tree/master/cvlab)) and runs **inside this page** (Python compiled to WebAssembly).
 🔒 **Your image never leaves your device**: it is not uploaded, there is no server that computes anything. Pick a sample or drop your own below, then play with the sliders in each tab."""
 
-with gr.Blocks(title="Image processing from scratch", theme=gr.themes.Soft(primary_hue="amber")) as demo:
+with gr.Blocks(title="Image processing from scratch", analytics_enabled=False,
+                   theme=gr.themes.Soft(primary_hue="amber", font=["ui-sans-serif", "system-ui", "sans-serif"], font_mono=["ui-monospace", "monospace"])) as demo:
     gr.Markdown(INTRO)
     with gr.Row():
         pick = gr.Dropdown(list(SAMPLES), value="cameraman", label="Sample image", scale=1)
@@ -128,3 +129,5 @@ with gr.Blocks(title="Image processing from scratch", theme=gr.themes.Soft(prima
         lambda im, s, t, lv: Fg.huffman_figure(im, s, t, int(lv)))
     gr.Markdown("Built by [Mounib Benimam](https://github.com/mbenimam) · [source and notebooks](https://github.com/mbenimam/Computer-Vision-Projects)")
 
+
+demo.launch()
