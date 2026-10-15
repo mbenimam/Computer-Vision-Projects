@@ -8,9 +8,9 @@
 **Classical computer vision, written from first principles with numpy only, plus an interactive demo that runs entirely in your browser: your images are never uploaded.**
 Histograms, convolution, the Fourier transform, Harris corners, Hough lines, quadtree segmentation and Huffman coding, each one a small tested function you can read in a few minutes.
 
-**Live demo: https://cv.shmod.me** (first load downloads the Python runtime; later visits are cached).
+**Live demo: https://demo-image-1.shmod.me** (first load downloads the Python runtime; later visits are cached).
 
-![Hough transform: edge pixels become curves, lines become bright spots](docs/assets/hough.png)
+![The demo on the Hough lines topic: edge pixels become curves, lines become bright spots in the accumulator](docs/assets/demo-image-1.png)
 
 ## Why I built it
 
@@ -31,9 +31,9 @@ The one design constraint was privacy. A normal Gradio app sends your image to a
 | Quadtree | split blocks, depth map, merged regions | cut where the image is not uniform, then glue similar neighbours |
 | Huffman | the code tree, entropy against average code length | frequent symbols get short codes |
 
-| | | |
+| Fourier transform | Harris corners | Quadtree split and merge |
 |---|---|---|
-| ![](docs/assets/fourier.png) | ![](docs/assets/harris.png) | ![](docs/assets/quadtree.png) |
+| ![Fourier topic: spectrum, mask and what was removed](docs/assets/demo-image-2.png) | ![Harris topic: response map and structure-tensor ellipses](docs/assets/demo-image-3.png) | ![Quadtree topic: split blocks, depth map and merged regions](docs/assets/demo-image-4.png) |
 
 ## A worked example: equalising
 
@@ -50,15 +50,13 @@ python -m http.server -d site 8000
 
 Then open http://localhost:8000. The first load downloads the Python runtime (tens of MB, cached afterwards); every image you drop in stays in the page.
 
-To rebuild the figures above: `python scripts/make_figures.py`.
-
 ## How it is laid out
 
 ```
 cvlab/         the algorithms, numpy only (histogram, filters, fourier, harris, hough, quadtree, huffman)
 tests/         pytest: scipy and the FFT as references, plus properties (prefix-free, lossless, ...)
 demo/          the Gradio app (app.py) and the figure builders (figures.py)
-scripts/       build_demo.py (static site), make_figures.py (README images)
+scripts/       build_demo.py (static site)
 notebooks/     the ten lab notebooks the code came from, named by topic
 Dockerfile     builds site/ and serves it with nginx
 ```
